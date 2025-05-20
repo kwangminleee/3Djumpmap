@@ -19,11 +19,17 @@ public class PlayerController : MonoBehaviour
     public float lookSensitivity;
     private Vector2 mouseDelta;
 
-    private Rigidbody rigidbody;
+    private Rigidbody _rigidbody;
+    private Animator animator;
+
+    private AnimationController animController;
+    private bool isJumping = false;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();    
+        _rigidbody = GetComponent<Rigidbody>();    
+        animator = GetComponent<Animator>();
+        animController = GetComponent<AnimationController>();
     }
 
     private void Start()
@@ -34,6 +40,13 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+
+        // 점프 상태라면 착지 여부 확인
+        if (isJumping && IsGrounded())
+        {
+            isJumping = false;
+            animController.OnLanded();  // 점프 애니메이션 해제
+        }
     }
 
     private void LateUpdate()
@@ -45,9 +58,12 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
         dir *= moveSpeed;
-        dir.y = rigidbody.velocity.y;
+        dir.y = _rigidbody.velocity.y;
 
-        rigidbody.velocity = dir;
+        _rigidbody.velocity = dir;
+
+        bool isMoving = curMovementInput.magnitude > 0.1f;
+        animController.SetMove(isMoving);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -80,7 +96,10 @@ public class PlayerController : MonoBehaviour
     {
         if(context.phase == InputActionPhase.Started && IsGrounded())
         {
-            rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+            _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+
+            isJumping = true;
+            animController.SetJump(true);
         }
     }
 
