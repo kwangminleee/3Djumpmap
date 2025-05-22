@@ -41,11 +41,10 @@ public class PlayerController : MonoBehaviour
     {
         Move();
 
-        // 점프 상태라면 착지 여부 확인
         if (isJumping && IsGrounded())
         {
             isJumping = false;
-            animController.OnLanded();  // 점프 애니메이션 해제
+            animController.OnLanded(); 
         }
     }
 
@@ -121,5 +120,21 @@ public class PlayerController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void BoostSpeed(float boost, float duration)
+    {
+        StopAllCoroutines();
+        StartCoroutine(SpeedBoostCoroutine(boost, duration));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float boost, float duration)
+    {
+        float originalSpeed = moveSpeed;
+        moveSpeed += boost;
+
+        yield return new WaitForSeconds(duration);
+
+        moveSpeed = originalSpeed;
     }
 }

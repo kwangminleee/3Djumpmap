@@ -17,7 +17,6 @@ public class AnimationController : MonoBehaviour
         if (isMoving != lastMove)
         {
             animator.SetBool("Move", isMoving);
-            Debug.Log($"{isMoving} ?");
             lastMove = isMoving;
         }
     }
@@ -27,7 +26,6 @@ public class AnimationController : MonoBehaviour
         if (jump != lastJump)
         {
             animator.SetBool("Jump", jump);
-            Debug.Log($"{jump} !");
             lastJump = jump;
         }
     }
