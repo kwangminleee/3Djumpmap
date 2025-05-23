@@ -20,6 +20,10 @@ public class Condition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (passiveValue != 0)
+        {
+            curValue = Mathf.Clamp(curValue + passiveValue * Time.deltaTime, 0, maxValue);
+        }
         uiBar.fillAmount = GetPercentage();
     }
 

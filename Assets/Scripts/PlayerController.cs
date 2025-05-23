@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
 
     private AnimationController animController;
     private bool isJumping = false;
+    public Condition stamina;
+    public float jumpStaminaCost = 100f;
 
     private void Awake()
     {
@@ -95,10 +97,19 @@ public class PlayerController : MonoBehaviour
     {
         if(context.phase == InputActionPhase.Started && IsGrounded())
         {
-            _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+            if (stamina.curValue >= jumpStaminaCost)
+            {
+                _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
 
-            isJumping = true;
-            animController.SetJump(true);
+                isJumping = true;
+                animController.SetJump(true);
+
+                stamina.Subtract(jumpStaminaCost);
+            }
+            else
+            {
+                Debug.Log("Not enough stamina to jump.");
+            }
         }
     }
 
